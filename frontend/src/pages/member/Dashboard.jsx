@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { getWallet } from '../../api/wallet';
 import { getMyContributions, getGroupContributions } from '../../api/contributions';
+import { getDisbursements } from '../../api/disbursements';
 import { useAuthStore } from '../../store/authStore';
 import { formatCurrency } from '../../utils/formatCurrency';
 import Badge from '../../components/ui/Badge';
@@ -24,6 +25,12 @@ export default function Dashboard() {
     queryFn: () => getGroupContributions(1).then((r) => r.data.data),
   });
 
+  const { data: disbursementsData } = useQuery({
+    queryKey: ['member-disbursements-dashboard'],
+    queryFn: () => getDisbursements().then((r) => r.data.data.disbursements),
+  });
+
+  const latestDisbursement = disbursementsData?.data?.[0];
   const latestContribution = myContributions?.data?.[0];
   const cycle = groupData?.cycle;
   const groupContributions = groupData?.contributions?.data ?? [];
@@ -103,6 +110,35 @@ export default function Dashboard() {
             </Link>
           </div>
         </div>
+
+        {/* Last Disbursement card */}
+        {latestDisbursement && (
+          <div className="rounded-xl p-6 bg-white shadow-md border border-gray-100 mb-5">
+            <p className="text-sm uppercase tracking-wide text-gray-500">Last Disbursement</p>
+            <p className="text-xl font-bold mt-1" style={{ color: '#16a34a' }}>
+              {formatCurrency(latestDisbursement.amount)}
+            </p>
+            <p className="text-sm text-gray-500 mt-1">
+              {latestDisbursement.title} · {latestDisbursement.cycle?.name}
+            </p>
+            {latestDisbursement.published_at && (
+              <p className="text-xs text-gray-400 mt-1">
+                {new Date(latestDisbursement.published_at).toLocaleDateString('en-NG', {
+                  day: '2-digit',
+                  month: 'short',
+                  year: 'numeric',
+                })}
+              </p>
+            )}
+            <Link
+              to="/disbursements"
+              className="inline-block mt-3 text-sm underline opacity-70 hover:opacity-100"
+              style={{ color: '#1a3c6e' }}
+            >
+              View all disbursements &rarr;
+            </Link>
+          </div>
+        )}
 
         {/* Group stats card */}
         {cycle && (

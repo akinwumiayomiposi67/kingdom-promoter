@@ -1,12 +1,15 @@
 <?php
 
 use App\Http\Controllers\Admin\ContributionCycleController;
+use App\Http\Controllers\Admin\DisbursementController as AdminDisbursementController;
 use App\Http\Controllers\Admin\PackageController;
 use App\Http\Controllers\Auth\InvitationController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Member\ContributionController;
+use App\Http\Controllers\Member\DisbursementController as MemberDisbursementController;
 use App\Http\Controllers\Member\WalletController;
+use App\Http\Controllers\PrivateFileController;
 use App\Http\Controllers\Webhook\PaystackWebhookController;
 use Illuminate\Support\Facades\Route;
 
@@ -40,6 +43,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/contributions/set-package', [ContributionController::class, 'setPackage']);
         Route::get('/contributions', [ContributionController::class, 'myContributions']);
         Route::get('/contributions/group', [ContributionController::class, 'groupContributions']);
+
+        Route::get('/disbursements', [MemberDisbursementController::class, 'index']);
+        Route::get('/disbursements/{id}', [MemberDisbursementController::class, 'show']);
     });
 
     // Admin-only routes
@@ -55,5 +61,18 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/cycles', [ContributionCycleController::class, 'store'])->middleware('two_factor');
         Route::get('/cycles/{id}', [ContributionCycleController::class, 'show']);
         Route::patch('/cycles/{id}/close', [ContributionCycleController::class, 'close'])->middleware('two_factor');
+
+        // Disbursements
+        Route::get('/disbursements', [AdminDisbursementController::class, 'index']);
+        Route::post('/disbursements', [AdminDisbursementController::class, 'store'])->middleware('two_factor');
+        Route::get('/disbursements/{id}', [AdminDisbursementController::class, 'show']);
+        Route::patch('/disbursements/{id}/publish', [AdminDisbursementController::class, 'publish'])->middleware('two_factor');
     });
+
+    // Receipt signed-URL generation (admin or active member)
+    Route::get('/receipts/{disbursement}', [PrivateFileController::class, 'receipt']);
 });
+
+// Receipt file download — signature-verified, no auth middleware
+Route::get('/receipts/{disbursement}/download', [PrivateFileController::class, 'download'])
+    ->name('receipts.download');

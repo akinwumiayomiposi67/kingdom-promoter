@@ -7,7 +7,9 @@ import Wallet from './pages/member/Wallet';
 import Onboarding from './pages/member/Onboarding';
 import MyContributions from './pages/member/MyContributions';
 import GroupContributions from './pages/member/GroupContributions';
+import Disbursements from './pages/member/Disbursements';
 import AdminDashboard from './pages/admin/AdminDashboard';
+import AdminDisbursements from './pages/admin/Disbursements';
 import ProtectedRoute from './components/guards/ProtectedRoute';
 import MemberRoute from './components/guards/MemberRoute';
 import AdminRoute from './components/guards/AdminRoute';
@@ -75,6 +77,16 @@ export default function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/disbursements"
+          element={
+            <ProtectedRoute>
+              <MemberRoute>
+                <Disbursements />
+              </MemberRoute>
+            </ProtectedRoute>
+          }
+        />
 
         {/* Admin routes */}
         <Route
@@ -83,6 +95,16 @@ export default function App() {
             <ProtectedRoute>
               <AdminRoute>
                 <AdminDashboard />
+              </AdminRoute>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/disbursements"
+          element={
+            <ProtectedRoute>
+              <AdminRoute>
+                <AdminDisbursements />
               </AdminRoute>
             </ProtectedRoute>
           }
