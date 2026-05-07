@@ -40,7 +40,7 @@ class ProcessPaystackWebhook implements ShouldQueue
             return;
         }
 
-        $amount = ($data['amount'] ?? 0) / 100;
+        $amount = bcdiv((string) ($data['amount'] ?? 0), '100', 2);
 
         $walletService->credit($wallet, $amount, $reference, 'Paystack deposit');
     }

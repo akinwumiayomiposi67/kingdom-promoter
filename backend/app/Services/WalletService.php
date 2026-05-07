@@ -13,7 +13,7 @@ class WalletService
 {
     public function credit(
         Wallet $wallet,
-        float $amount,
+        string $amount,
         string $reference,
         string $description = '',
         array $metadata = []
@@ -40,7 +40,7 @@ class WalletService
 
     public function debit(
         Wallet $wallet,
-        float $amount,
+        string $amount,
         string $reference,
         string $description = '',
         array $metadata = []
@@ -49,7 +49,7 @@ class WalletService
             // Re-fetch with a row lock to prevent race conditions
             $wallet = Wallet::lockForUpdate()->findOrFail($wallet->id);
 
-            if ($wallet->balance < $amount) {
+            if (bccomp((string) $wallet->balance, $amount, 2) < 0) {
                 throw new InsufficientBalanceException(
                     "Insufficient balance. Available: {$wallet->balance}, Required: {$amount}"
                 );

@@ -14,10 +14,14 @@ class PaystackService
 
     public function createCustomer(User $user): array
     {
+        $nameParts = explode(' ', $user->name);
+        $firstName = $nameParts[0];
+        $lastName  = count($nameParts) > 1 ? implode(' ', array_slice($nameParts, 1)) : $user->name;
+
         $response = $this->paystackRequest()->post('https://api.paystack.co/customer', [
             'email'      => $user->email,
-            'first_name' => explode(' ', $user->name)[0],
-            'last_name'  => implode(' ', array_slice(explode(' ', $user->name), 1)) ?: $user->name,
+            'first_name' => $firstName,
+            'last_name'  => $lastName,
             'phone'      => $user->phone,
         ]);
 

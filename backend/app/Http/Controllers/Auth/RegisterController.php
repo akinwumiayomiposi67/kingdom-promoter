@@ -48,10 +48,12 @@ class RegisterController extends Controller
 
             $invitation->update(['used_at' => now()]);
 
-            $this->createWalletForUser($user);
-
             return $user;
         });
+
+        // Paystack API calls happen outside the DB transaction to avoid
+        // holding the connection open during slow/failing HTTP requests.
+        $this->createWalletForUser($user);
 
         $token = $user->createToken('auth_token')->plainTextToken;
 

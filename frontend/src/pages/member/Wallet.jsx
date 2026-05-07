@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
+import { format } from 'date-fns';
 import { getWallet } from '../../api/wallet';
 import { formatCurrency } from '../../utils/formatCurrency';
 
@@ -107,11 +108,7 @@ export default function Wallet() {
                   {transactions.map((tx) => (
                     <tr key={tx.id} className="hover:bg-gray-50 transition-colors">
                       <td className="px-6 py-3 text-gray-500 whitespace-nowrap">
-                        {new Date(tx.created_at).toLocaleDateString('en-NG', {
-                          day: '2-digit',
-                          month: 'short',
-                          year: 'numeric',
-                        })}
+                        {format(new Date(tx.created_at), 'dd MMM yyyy')}
                       </td>
                       <td className="px-6 py-3">
                         <span
