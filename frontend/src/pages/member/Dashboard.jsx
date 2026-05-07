@@ -6,6 +6,7 @@ import { getDisbursements } from '../../api/disbursements';
 import { useAuthStore } from '../../store/authStore';
 import { formatCurrency } from '../../utils/formatCurrency';
 import Badge from '../../components/ui/Badge';
+import NotificationBell from '../../components/ui/NotificationBell';
 
 export default function Dashboard() {
   const user = useAuthStore((state) => state.user);
@@ -43,7 +44,10 @@ export default function Dashboard() {
         <h1 className="text-2xl font-bold mb-1" style={{ color: '#1a3c6e' }}>
           Member Dashboard
         </h1>
-        <p className="text-gray-600 mb-6">Welcome back, {user?.name}!</p>
+        <div className="flex items-center justify-between mb-6">
+          <p className="text-gray-600">Welcome back, {user?.name}!</p>
+          <NotificationBell />
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
           {/* Wallet summary card */}
@@ -168,6 +172,24 @@ export default function Dashboard() {
             </div>
           </div>
         )}
+
+        {/* Quick links */}
+        <div className="flex gap-3 flex-wrap mt-5">
+          <Link
+            to="/meetings"
+            className="inline-flex items-center gap-1 px-4 py-2 rounded-lg text-sm font-semibold border border-gray-200 bg-white hover:bg-gray-50 transition-colors"
+            style={{ color: '#1a3c6e' }}
+          >
+            📅 Meetings
+          </Link>
+          <Link
+            to="/notifications"
+            className="inline-flex items-center gap-1 px-4 py-2 rounded-lg text-sm font-semibold border border-gray-200 bg-white hover:bg-gray-50 transition-colors"
+            style={{ color: '#1a3c6e' }}
+          >
+            🔔 Notifications
+          </Link>
+        </div>
       </div>
     </div>
   );

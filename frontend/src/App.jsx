@@ -8,8 +8,11 @@ import Onboarding from './pages/member/Onboarding';
 import MyContributions from './pages/member/MyContributions';
 import GroupContributions from './pages/member/GroupContributions';
 import Disbursements from './pages/member/Disbursements';
+import Meetings from './pages/member/Meetings';
+import Notifications from './pages/member/Notifications';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminDisbursements from './pages/admin/Disbursements';
+import AdminMeetings from './pages/admin/Meetings';
 import ProtectedRoute from './components/guards/ProtectedRoute';
 import MemberRoute from './components/guards/MemberRoute';
 import AdminRoute from './components/guards/AdminRoute';
@@ -87,6 +90,26 @@ export default function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/meetings"
+          element={
+            <ProtectedRoute>
+              <MemberRoute>
+                <Meetings />
+              </MemberRoute>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/notifications"
+          element={
+            <ProtectedRoute>
+              <MemberRoute>
+                <Notifications />
+              </MemberRoute>
+            </ProtectedRoute>
+          }
+        />
 
         {/* Admin routes */}
         <Route
@@ -105,6 +128,17 @@ export default function App() {
             <ProtectedRoute>
               <AdminRoute>
                 <AdminDisbursements />
+              </AdminRoute>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/admin/meetings"
+          element={
+            <ProtectedRoute>
+              <AdminRoute>
+                <AdminMeetings />
               </AdminRoute>
             </ProtectedRoute>
           }
