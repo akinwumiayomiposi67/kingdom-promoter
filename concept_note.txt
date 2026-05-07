@@ -1,0 +1,383 @@
+App Concept
+
+App type: Invitation-only PWA web app
+Purpose: A transparent Christian association contribution platform where members contribute monthly, funds are tracked openly, and admins publish disbursement records with receipts.
+
+Suggested app name ideas:
+Kingdom Fund Circle (KFC)
+
+User Roles
+1. Member
+
+A member can:
+
+Accept invitation and register
+View personal dashboard
+See monthly contribution package
+View virtual account number
+Fund wallet
+View wallet balance
+See contribution history
+See total monthly contribution raised by the group
+View disbursement records
+Download/view receipts uploaded by admin
+Receive meeting notifications
+View upcoming meetings
+2. Admin
+
+Admin can do everything a member can do, plus:
+
+Invite new members
+Approve/deactivate members
+Create contribution packages
+Set monthly contribution cycle
+Create meetings
+Send meeting notifications
+View all member payments
+View unpaid/part-paid members
+Debit wallets automatically/manual confirmation
+Publish monthly contribution summary
+Record disbursement
+Upload payment receipts
+Manage supported organizations/missionaries
+Export reports
+Member User Journey
+1. Invitation Flow
+Admin enters member name, phone number, and email.
+System generates a unique invitation link.
+Member receives invitation by email/SMS/WhatsApp.
+Member clicks the link.
+Member creates account:
+Full name
+Email
+Phone number
+Password
+Optional profile photo
+Member accepts association terms.
+Member account becomes active.
+
+Important rule: nobody should be able to register without an invitation.
+
+2. Onboarding Flow
+
+After registration, member sees:
+
+Welcome screen
+
+Association name
+Purpose of the contribution
+Monthly support mission
+Transparency promise
+Button: “Choose My Monthly Contribution”
+
+Member selects package:
+
+₦10,000 monthly
+₦20,000 monthly
+₦50,000 monthly
+₦100,000 monthly
+Custom amount
+
+After selection, system saves the member’s monthly pledge.
+
+3. Wallet / Virtual Account Flow
+
+Each member gets a dedicated virtual account.
+
+Dashboard shows:
+
+Bank name
+Account number
+Account name
+Wallet balance
+Monthly pledge amount
+Contribution status
+
+Example:
+
+Wallet Balance: ₦25,000
+Monthly Package: ₦10,000
+This Month Status: Paid
+Virtual Account: 1234567890 - Wema Bank
+
+When the member transfers money into the virtual account:
+
+Payment gateway detects payment.
+Wallet is credited automatically.
+Member receives notification.
+System records transaction.
+Dashboard updates instantly.
+
+Recommended Nigerian providers to consider:
+
+Paystack Dedicated Virtual Accounts
+Monthly Contribution Flow
+Automatic Monthly Debit
+
+At the beginning or end of each month:
+
+System checks each member’s selected package.
+If wallet balance is enough, system debits wallet.
+Contribution is marked as paid.
+Member receives payment confirmation.
+Amount is added to that month’s general contribution pool.
+
+Example:
+
+Member package: ₦10,000
+Wallet balance: ₦15,000
+System debits: ₦10,000
+Remaining wallet balance: ₦5,000
+
+If Wallet Balance Is Not Enough
+
+System marks the member as:
+
+Pending
+Partially funded
+Not paid
+
+Member gets reminders:
+
+Email
+SMS
+WhatsApp push notification
+In-app alert
+
+Example:
+
+“Your March contribution of ₦10,000 is pending. Please fund your wallet using your virtual account.”
+
+Member Dashboard
+
+The member dashboard should show:
+
+Personal Section
+Wallet balance
+Monthly pledge/package
+Current month payment status
+Total contributed so far
+Last payment date
+Virtual account details
+Group Transparency Section
+Total raised this month
+Number of paid members
+Number of pending members
+Current supported project/mission
+Last disbursement record
+Receipt uploaded by admin
+
+Example dashboard cards:
+
+My Wallet: ₦35,000
+My Monthly Contribution: ₦10,000
+My Total Contribution: ₦120,000
+April Group Total: ₦5,000,000
+April Disbursed To: Missionary Support Project
+Receipt: View Receipt
+Admin Dashboard
+
+Admin dashboard should show:
+
+Overview
+Total members
+Active members
+Pending invited members
+Total wallet balance across members
+Current month contribution total
+Paid members
+Pending members
+Total disbursed this year
+Member Management
+
+Admin can:
+
+Invite member
+View member profile
+View contribution history
+Change member package
+Suspend member
+Resend invitation
+Contribution Management
+
+Admin can:
+
+Create monthly contribution cycle
+View total contributions
+See who has paid
+See who has not paid
+Trigger wallet debit
+Send reminders
+Export CSV/PDF report
+Disbursement Management
+
+Admin can record:
+
+Month
+Total amount raised
+Amount disbursed
+Beneficiary organization/missionary
+Purpose of support
+Date sent
+Payment method
+Receipt upload
+Notes
+
+Once published, members can view it.
+
+Disbursement Transparency Flow
+
+At the end of the month:
+
+System calculates total contribution.
+Admin reviews contribution summary.
+Admin transfers money manually to the selected organization/missionary.
+Admin records disbursement in the app.
+Admin uploads payment receipt.
+Members receive notification.
+Members can view:
+Total amount raised
+Amount sent out
+Beneficiary
+Receipt
+Admin note
+
+Example:
+
+April 2026 Contribution Summary
+
+Total Raised: ₦5,000,000
+Beneficiary: Missionary Outreach Support
+Amount Disbursed: ₦5,000,000
+Date Sent: April 30, 2026
+Receipt: View Receipt
+Status: Completed
+Meeting Module
+Admin Meeting Flow
+
+Admin can create a meeting with:
+
+Meeting title
+Date
+Time
+Venue or online meeting link
+Description
+Agenda
+Attachment if needed
+
+When admin publishes meeting:
+
+All members receive notification
+Meeting appears on dashboard
+Members can click “I will attend”
+Admin can view expected attendance
+Member Meeting Flow
+
+Member can:
+
+See upcoming meetings
+View meeting details
+RSVP
+Receive reminders before meeting
+Notification System
+
+The app should support:
+
+Email notifications
+SMS notifications
+WhatsApp notification integration later
+PWA push notifications
+In-app notification bell
+
+Notification types:
+
+Invitation sent
+Wallet funded
+Monthly contribution successful
+Contribution pending
+Meeting scheduled
+Meeting reminder
+Disbursement published
+Receipt uploaded
+Main App Pages
+Member Pages
+Login
+Accept Invitation
+Register
+Dashboard
+My Wallet
+My Contributions
+Group Contributions
+Disbursement Records
+Meetings
+Notifications
+Profile/Settings
+Admin Pages
+Admin Dashboard
+Members
+Invitations
+Contribution Packages
+Monthly Contributions
+Wallet Transactions
+Disbursements
+Receipt Uploads
+Meetings
+Reports
+Settings
+PWA Requirements
+
+The web app should be PWA-ready with:
+
+Installable on mobile and desktop
+Mobile-first design
+Offline-friendly dashboard cache
+Push notification support
+App icon
+Splash screen
+Fast loading
+Responsive UI
+Secure HTTPS
+Works well on Android phones
+
+Offline mode can allow members to view cached:
+
+Dashboard
+Past contributions
+Meeting history
+Disbursement records
+
+Payments and wallet updates should require internet.
+
+Suggested Tech Stack
+Frontend
+React / Next.js
+Tailwind CSS
+PWA support
+Mobile-first UI
+Backend
+Laravel, Node.js/NestJS, or Django
+REST API or GraphQL
+Role-based access control
+Database
+PostgreSQL or MySQL
+Payment
+Paystack virtual accounts
+Storage
+Cloudinary, AWS S3, or local secure file storage for receipts
+Notifications
+Email: Resend, SendGrid, Mailgun
+SMS: Termii, Twilio, Africa’s Talking
+Push: Firebase Cloud Messaging
+Important Security Features
+Invitation-only registration
+Role-based permissions
+Admin action logs
+Payment webhook verification
+Receipt upload validation
+Secure wallet ledger
+No manual editing of transaction history
+Two-factor authentication for admins
+Audit trail for every debit/disbursement
+Developer Summary
+
+Build an invitation-only PWA membership contribution platform where each member has a wallet and dedicated virtual account. Members choose a monthly contribution package, fund their wallet, and the system automatically debits monthly dues. Members can see their personal contribution history and the total group contribution for each month. Admins manage invitations, meetings, contribution cycles, disbursements, beneficiaries, and receipt uploads. The system must prioritize transparency, audit trails, notifications, and mobile-first usability.
