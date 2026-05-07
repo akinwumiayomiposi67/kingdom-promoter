@@ -28,20 +28,16 @@ class DisbursementController extends Controller
         $data = $request->validated();
 
         if ($request->hasFile('receipt')) {
-            $file     = $request->file('receipt');
-            $year     = now()->format('Y');
-            $month    = now()->format('m');
-            $ext      = $file->getClientOriginalExtension();
-            $filename = Str::uuid() . '.' . $ext;
-            $path     = "receipts/{$year}/{$month}/{$filename}";
+            $file      = $request->file('receipt');
+            $year      = now()->format('Y');
+            $month     = now()->format('m');
+            $ext       = $file->getClientOriginalExtension();
+            $filename  = Str::uuid() . '.' . $ext;
+            $directory = "receipts/{$year}/{$month}";
 
-            Storage::disk('private')->putFileAs(
-                "receipts/{$year}/{$month}",
-                $file,
-                $filename
-            );
+            Storage::disk('private')->putFileAs($directory, $file, $filename);
 
-            $data['receipt_path'] = $path;
+            $data['receipt_path'] = "{$directory}/{$filename}";
         }
 
         unset($data['receipt']);
