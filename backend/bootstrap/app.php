@@ -18,6 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
             'admin'        => AdminOnly::class,
+            'member'       => \App\Http\Middleware\MemberOnly::class,
             'two_factor'   => TwoFactorVerified::class,
         ]);
     })

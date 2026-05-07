@@ -23,12 +23,12 @@ export default defineConfig({
       workbox: {
         runtimeCaching: [
           {
-            urlPattern: /\/dashboard|\/contributions|\/disbursements|\/meetings/,
+            urlPattern: /^\/(dashboard|contributions|disbursements|meetings)(\/|$)/,
             handler: 'StaleWhileRevalidate',
             options: { cacheName: 'pages-cache' },
           },
           {
-            urlPattern: /\/api\/(auth|wallet|transactions)/,
+            urlPattern: /\/api\/(auth|wallet|transactions)(\/|$)/,
             handler: 'NetworkOnly',
           },
         ],
