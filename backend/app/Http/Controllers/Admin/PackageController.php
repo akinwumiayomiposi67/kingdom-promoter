@@ -20,6 +20,16 @@ class PackageController extends Controller
         ]);
     }
 
+    public function activePackages(): JsonResponse
+    {
+        $packages = ContributionPackage::active()->latest()->get();
+
+        return response()->json([
+            'success' => true,
+            'data'    => ['packages' => $packages],
+        ]);
+    }
+
     public function store(Request $request): JsonResponse
     {
         $validated = $request->validate([

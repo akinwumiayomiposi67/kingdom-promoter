@@ -36,6 +36,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::middleware('member')->prefix('member')->group(function () {
         Route::get('/wallet', [WalletController::class, 'show']);
 
+        Route::get('/packages', [PackageController::class, 'activePackages']);
         Route::post('/contributions/set-package', [ContributionController::class, 'setPackage']);
         Route::get('/contributions', [ContributionController::class, 'myContributions']);
         Route::get('/contributions/group', [ContributionController::class, 'groupContributions']);

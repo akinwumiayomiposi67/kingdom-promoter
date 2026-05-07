@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { getPackages, setPackage } from '../../api/contributions';
+import { getActivePackages, setPackage } from '../../api/contributions';
 import { formatCurrency } from '../../utils/formatCurrency';
 
 const PACKAGE_STYLES = {
@@ -17,8 +17,8 @@ export default function Onboarding() {
   const [error, setError] = useState('');
 
   const { data: packagesData, isLoading } = useQuery({
-    queryKey: ['packages'],
-    queryFn: () => getPackages().then((r) => r.data.data.packages),
+    queryKey: ['active-packages'],
+    queryFn: () => getActivePackages().then((r) => r.data.data.packages),
   });
 
   const mutation = useMutation({

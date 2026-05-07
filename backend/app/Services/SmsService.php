@@ -14,11 +14,11 @@ class SmsService
 
             $response = Http::post('https://api.ng.termii.com/api/sms/send', [
                 'to'      => $normalized,
-                'from'    => env('TERMII_SENDER_ID'),
+                'from'    => config('termii.sender_id'),
                 'sms'     => $message,
                 'type'    => 'plain',
                 'channel' => 'generic',
-                'api_key' => env('TERMII_API_KEY'),
+                'api_key' => config('termii.api_key'),
             ]);
 
             return $response->successful();
