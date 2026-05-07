@@ -13,6 +13,11 @@ import Notifications from './pages/member/Notifications';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminDisbursements from './pages/admin/Disbursements';
 import AdminMeetings from './pages/admin/Meetings';
+import Members from './pages/admin/Members';
+import Reports from './pages/admin/Reports';
+import Settings from './pages/admin/Settings';
+import TwoFactorVerify from './pages/admin/TwoFactorVerify';
+import AdminWallets from './pages/admin/AdminWallets';
 import ProtectedRoute from './components/guards/ProtectedRoute';
 import MemberRoute from './components/guards/MemberRoute';
 import AdminRoute from './components/guards/AdminRoute';
@@ -140,6 +145,60 @@ export default function App() {
               <AdminRoute>
                 <AdminMeetings />
               </AdminRoute>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/admin/members"
+          element={
+            <ProtectedRoute>
+              <AdminRoute>
+                <Members />
+              </AdminRoute>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/admin/wallets"
+          element={
+            <ProtectedRoute>
+              <AdminRoute>
+                <AdminWallets />
+              </AdminRoute>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/admin/reports"
+          element={
+            <ProtectedRoute>
+              <AdminRoute>
+                <Reports />
+              </AdminRoute>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/admin/settings"
+          element={
+            <ProtectedRoute>
+              <AdminRoute>
+                <Settings />
+              </AdminRoute>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* 2FA verify — shown after login, requires auth but not full admin guard */}
+        <Route
+          path="/admin/2fa/verify"
+          element={
+            <ProtectedRoute>
+              <TwoFactorVerify />
             </ProtectedRoute>
           }
         />

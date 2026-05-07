@@ -1,12 +1,17 @@
 <?php
 
 use App\Http\Controllers\Admin\ContributionCycleController;
+use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\DisbursementController as AdminDisbursementController;
 use App\Http\Controllers\Admin\MeetingController as AdminMeetingController;
+use App\Http\Controllers\Admin\MemberController as AdminMemberController;
 use App\Http\Controllers\Admin\PackageController;
+use App\Http\Controllers\Admin\ReportController;
+use App\Http\Controllers\Admin\WalletController as AdminWalletController;
 use App\Http\Controllers\Auth\InvitationController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Auth\TwoFactorController;
 use App\Http\Controllers\Member\ContributionController;
 use App\Http\Controllers\Member\DisbursementController as MemberDisbursementController;
 use App\Http\Controllers\Member\MeetingController as MemberMeetingController;
@@ -39,6 +44,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/auth/me', [LoginController::class, 'me']);
     Route::post('/auth/fcm-token', [NotificationController::class, 'registerFcmToken']);
 
+    // Two-factor authentication
+    Route::post('/auth/2fa/setup', [TwoFactorController::class, 'setup']);
+    Route::post('/auth/2fa/enable', [TwoFactorController::class, 'enable']);
+    Route::post('/auth/2fa/verify', [TwoFactorController::class, 'verify']);
+    Route::post('/auth/2fa/disable', [TwoFactorController::class, 'disable']);
+
     // Member-only routes
     Route::middleware('member')->prefix('member')->group(function () {
         Route::get('/wallet', [WalletController::class, 'show']);
@@ -65,6 +76,24 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Admin-only routes
     Route::middleware(['admin'])->prefix('admin')->group(function () {
+        // Dashboard
+        Route::get('/dashboard/stats', [DashboardController::class, 'stats']);
+
+        // Members
+        Route::get('/members', [AdminMemberController::class, 'index']);
+        Route::get('/members/{id}', [AdminMemberController::class, 'show']);
+        Route::patch('/members/{id}/status', [AdminMemberController::class, 'updateStatus'])->middleware('two_factor');
+        Route::post('/members/invite', [AdminMemberController::class, 'invite'])->middleware('two_factor');
+
+        // Admin wallets
+        Route::get('/wallets', [AdminWalletController::class, 'index']);
+        Route::get('/wallets/{userId}', [AdminWalletController::class, 'show']);
+        Route::post('/wallets/{userId}/manual-debit', [AdminWalletController::class, 'manualDebit'])->middleware('two_factor');
+
+        // Reports
+        Route::get('/reports/contributions', [ReportController::class, 'contributions']);
+        Route::get('/reports/wallets', [ReportController::class, 'wallets']);
+
         // Packages
         Route::get('/packages', [PackageController::class, 'index']);
         Route::post('/packages', [PackageController::class, 'store'])->middleware('two_factor');
