@@ -60,10 +60,10 @@ class NotificationController extends Controller
     public function registerFcmToken(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'token' => ['required', 'string'],
+            'fcm_token' => ['required', 'string'],
         ]);
 
-        auth()->user()->update(['fcm_token' => $validated['token']]);
+        auth()->user()->update(['fcm_token' => $validated['fcm_token']]);
 
         return response()->json(['success' => true, 'data' => []]);
     }
