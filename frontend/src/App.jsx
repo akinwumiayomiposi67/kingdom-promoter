@@ -3,6 +3,7 @@ import Login from './pages/auth/Login';
 import AcceptInvitation from './pages/auth/AcceptInvitation';
 import Register from './pages/auth/Register';
 import Dashboard from './pages/member/Dashboard';
+import Wallet from './pages/member/Wallet';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import ProtectedRoute from './components/guards/ProtectedRoute';
 import MemberRoute from './components/guards/MemberRoute';
@@ -27,6 +28,16 @@ export default function App() {
             <ProtectedRoute>
               <MemberRoute>
                 <Dashboard />
+              </MemberRoute>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/wallet"
+          element={
+            <ProtectedRoute>
+              <MemberRoute>
+                <Wallet />
               </MemberRoute>
             </ProtectedRoute>
           }
