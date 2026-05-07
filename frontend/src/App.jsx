@@ -4,6 +4,9 @@ import AcceptInvitation from './pages/auth/AcceptInvitation';
 import Register from './pages/auth/Register';
 import Dashboard from './pages/member/Dashboard';
 import Wallet from './pages/member/Wallet';
+import Onboarding from './pages/member/Onboarding';
+import MyContributions from './pages/member/MyContributions';
+import GroupContributions from './pages/member/GroupContributions';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import ProtectedRoute from './components/guards/ProtectedRoute';
 import MemberRoute from './components/guards/MemberRoute';
@@ -38,6 +41,36 @@ export default function App() {
             <ProtectedRoute>
               <MemberRoute>
                 <Wallet />
+              </MemberRoute>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/onboarding"
+          element={
+            <ProtectedRoute>
+              <MemberRoute>
+                <Onboarding />
+              </MemberRoute>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/contributions"
+          element={
+            <ProtectedRoute>
+              <MemberRoute>
+                <MyContributions />
+              </MemberRoute>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/contributions/group"
+          element={
+            <ProtectedRoute>
+              <MemberRoute>
+                <GroupContributions />
               </MemberRoute>
             </ProtectedRoute>
           }

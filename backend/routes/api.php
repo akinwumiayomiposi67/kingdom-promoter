@@ -1,8 +1,11 @@
 <?php
 
+use App\Http\Controllers\Admin\ContributionCycleController;
+use App\Http\Controllers\Admin\PackageController;
 use App\Http\Controllers\Auth\InvitationController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Member\ContributionController;
 use App\Http\Controllers\Member\WalletController;
 use App\Http\Controllers\Webhook\PaystackWebhookController;
 use Illuminate\Support\Facades\Route;
@@ -32,10 +35,24 @@ Route::middleware('auth:sanctum')->group(function () {
     // Member-only routes
     Route::middleware('member')->prefix('member')->group(function () {
         Route::get('/wallet', [WalletController::class, 'show']);
+
+        Route::post('/contributions/set-package', [ContributionController::class, 'setPackage']);
+        Route::get('/contributions', [ContributionController::class, 'myContributions']);
+        Route::get('/contributions/group', [ContributionController::class, 'groupContributions']);
     });
 
     // Admin-only routes
     Route::middleware(['admin'])->prefix('admin')->group(function () {
-        // Phase 2+ endpoints
+        // Packages
+        Route::get('/packages', [PackageController::class, 'index']);
+        Route::post('/packages', [PackageController::class, 'store'])->middleware('two_factor');
+        Route::put('/packages/{id}', [PackageController::class, 'update'])->middleware('two_factor');
+        Route::patch('/packages/{id}/toggle', [PackageController::class, 'toggleActive'])->middleware('two_factor');
+
+        // Cycles
+        Route::get('/cycles', [ContributionCycleController::class, 'index']);
+        Route::post('/cycles', [ContributionCycleController::class, 'store'])->middleware('two_factor');
+        Route::get('/cycles/{id}', [ContributionCycleController::class, 'show']);
+        Route::patch('/cycles/{id}/close', [ContributionCycleController::class, 'close'])->middleware('two_factor');
     });
 });
