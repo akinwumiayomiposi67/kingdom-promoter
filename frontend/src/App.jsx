@@ -1,0 +1,52 @@
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import Login from './pages/auth/Login';
+import AcceptInvitation from './pages/auth/AcceptInvitation';
+import Register from './pages/auth/Register';
+import Dashboard from './pages/member/Dashboard';
+import AdminDashboard from './pages/admin/AdminDashboard';
+import ProtectedRoute from './components/guards/ProtectedRoute';
+import MemberRoute from './components/guards/MemberRoute';
+import AdminRoute from './components/guards/AdminRoute';
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        {/* Root redirect */}
+        <Route path="/" element={<Navigate to="/login" replace />} />
+
+        {/* Public auth routes */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/invite" element={<AcceptInvitation />} />
+        <Route path="/register" element={<Register />} />
+
+        {/* Member routes */}
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <MemberRoute>
+                <Dashboard />
+              </MemberRoute>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Admin routes */}
+        <Route
+          path="/admin/dashboard"
+          element={
+            <ProtectedRoute>
+              <AdminRoute>
+                <AdminDashboard />
+              </AdminRoute>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Catch-all */}
+        <Route path="*" element={<Navigate to="/login" replace />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
