@@ -1,0 +1,81 @@
+{
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.tabSize": 4,
+    "editor.insertSpaces": true,
+    // PHP files use 4-space indent (Laravel convention)
+    "[php]": {
+        "editor.defaultFormatter": "bmewburn.vscode-intelephense-client",
+        "editor.tabSize": 4
+    },
+    // JS/JSX/TSX use 2-space indent (React convention)
+    "[javascript]": {
+        "editor.tabSize": 2
+    },
+    "[javascriptreact]": {
+        "editor.tabSize": 2
+    },
+    "[json]": {
+        "editor.tabSize": 2
+    },
+    "[css]": {
+        "editor.tabSize": 2
+    },
+    // Laravel Artisan command integration
+    "php.suggest.basic": false,
+    "intelephense.files.maxSize": 3000000,
+    "intelephense.environment.phpVersion": "8.2.0",
+    // Tailwind CSS IntelliSense
+    "tailwindCSS.includeLanguages": {
+        "javascript": "javascript",
+        "javascriptreact": "javascriptreact"
+    },
+    "tailwindCSS.experimental.classRegex": [
+        [
+            "clsx\\(([^)]*)\\)",
+            "(?:'|\"|`)([^']*)(?:'|\"|`)"
+        ],
+        [
+            "cn\\(([^)]*)\\)",
+            "(?:'|\"|`)([^']*)(?:'|\"|`)"
+        ]
+    ],
+    // File associations
+    "files.associations": {
+        "*.blade.php": "blade",
+        ".env": "dotenv",
+        ".env.example": "dotenv",
+        ".env.production.example": "dotenv"
+    },
+    // Exclude build artifacts from explorer
+    "files.exclude": {
+        "**/node_modules": true,
+        "**/vendor": true,
+        "frontend/dist": true,
+        "backend/bootstrap/cache/*.php": true
+    },
+    // Search exclusions
+    "search.exclude": {
+        "**/node_modules": true,
+        "**/vendor": true,
+        "frontend/dist": true
+    },
+    // Emmet for JSX
+    "emmet.includeLanguages": {
+        "javascript": "javascriptreact"
+    },
+    // Copilot — reference key project files for context
+    "github.copilot.chat.codeGeneration.useInstructionFiles": true,
+    // Spell checker (if Code Spell Checker installed)
+    "cSpell.words": [
+        "Paystack",
+        "Brevo",
+        "Termii",
+        "sanctum",
+        "dompdf",
+        "intelephense",
+        "workbox",
+        "zustand",
+        "tanstack"
+    ]
+}

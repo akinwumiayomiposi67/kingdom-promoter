@@ -1,0 +1,19 @@
+{
+    "recommendations": [
+        // PHP
+        "bmewburn.vscode-intelephense-client",
+        "onecentlin.laravel-blade",
+        "amiralizadeh9480.laravel-extra-intellisense",
+        "ryannaddy.laravel-artisan",
+        // JavaScript / React
+        "esbenp.prettier-vscode",
+        "dbaeumer.vscode-eslint",
+        "bradlc.vscode-tailwindcss",
+        "dsznajder.es7-react-js-snippets",
+        // Utilities
+        "mikestead.dotenv",
+        "streetsidesoftware.code-spell-checker",
+        "eamodio.gitlens",
+        "GitHub.vscode-pull-request-github"
+    ]
+}
