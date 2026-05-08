@@ -6,11 +6,16 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Models\Invitation;
 use App\Models\User;
+use App\Models\Wallet;
+use App\Services\PaystackService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class RegisterController extends Controller
 {
+    public function __construct(private readonly PaystackService $paystackService) {}
+
     public function register(RegisterRequest $request): JsonResponse
     {
         $hashedToken = hash('sha256', $request->token);
@@ -46,6 +51,10 @@ class RegisterController extends Controller
             return $user;
         });
 
+        // Paystack API calls happen outside the DB transaction to avoid
+        // holding the connection open during slow/failing HTTP requests.
+        $this->createWalletForUser($user);
+
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
@@ -61,5 +70,33 @@ class RegisterController extends Controller
                 ],
             ],
         ], 201);
+    }
+
+    private function createWalletForUser(User $user): void
+    {
+        $customerCode  = null;
+        $accountNumber = null;
+        $bankName      = null;
+
+        try {
+            $customer     = $this->paystackService->createCustomer($user);
+            $customerCode = $customer['customer_code'] ?? null;
+
+            if ($customerCode) {
+                $account       = $this->paystackService->createDedicatedVirtualAccount($customerCode);
+                $accountNumber = $account['account_number'] ?? null;
+                $bankName      = $account['bank']['name'] ?? null;
+            }
+        } catch (\Throwable $e) {
+            Log::warning("Paystack wallet setup failed for user {$user->id}: {$e->getMessage()}");
+        }
+
+        Wallet::create([
+            'user_id'                => $user->id,
+            'paystack_customer_code' => $customerCode,
+            'virtual_account_number' => $accountNumber,
+            'virtual_account_bank'   => $bankName,
+            'balance'                => 0,
+        ]);
     }
 }
