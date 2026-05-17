@@ -1,0 +1,26 @@
+# IDE & Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-workspace
+*.sublime-project
+
+# OS
+.DS_Store
+Thumbs.db
+*.log
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Build & Dependencies
+node_modules/
+vendor/
+/dist/
+
+# Cache
+.cache/
+*.tmp

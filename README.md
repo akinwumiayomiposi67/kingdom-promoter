@@ -21,17 +21,17 @@ Only invited members can register. Admins manage the entire lifecycle from invit
 
 This stack is intentionally chosen to run entirely on a standard **cPanel VPS** (Apache/Nginx + PHP + MySQL) with no paid cloud services.
 
-| Layer | Choice | Why |
-|---|---|---|
-| Backend | Laravel 11 (PHP 8.2+) | Native on cPanel, no Node.js server needed |
-| Frontend | React + Vite + Tailwind CSS | Compiled to static files, served from `public_html` |
-| Database | MySQL | Built into cPanel, free |
-| File Storage | Laravel local disk (`storage/`) | No S3/Cloudinary cost |
-| Email | cPanel SMTP or Brevo free tier | 300 emails/day free on Brevo |
-| SMS | Termii or Africa's Talking | Pay-as-you-go, Nigerian numbers supported |
-| Push Notifications | Firebase Cloud Messaging | Free tier, unlimited devices |
-| Payments | Paystack | Per-transaction fee only, no subscription |
-| PWA | Vite PWA plugin | Service worker + manifest, installable on Android |
+| Layer              | Choice                          | Why                                                 |
+| ------------------ | ------------------------------- | --------------------------------------------------- |
+| Backend            | Laravel 11 (PHP 8.2+)           | Native on cPanel, no Node.js server needed          |
+| Frontend           | React + Vite + Tailwind CSS     | Compiled to static files, served from `public_html` |
+| Database           | MySQL                           | Built into cPanel, free                             |
+| File Storage       | Laravel local disk (`storage/`) | No S3/Cloudinary cost                               |
+| Email              | cPanel SMTP or Brevo free tier  | 300 emails/day free on Brevo                        |
+| SMS                | Termii or Africa's Talking      | Pay-as-you-go, Nigerian numbers supported           |
+| Push Notifications | Firebase Cloud Messaging        | Free tier, unlimited devices                        |
+| Payments           | Paystack                        | Per-transaction fee only, no subscription           |
+| PWA                | Vite PWA plugin                 | Service worker + manifest, installable on Android   |
 
 ---
 
@@ -83,6 +83,7 @@ kingdom-promoter/
 ## Quick Start (Local — XAMPP)
 
 ### Prerequisites
+
 - XAMPP (PHP 8.2+, MySQL)
 - Composer
 - Node.js 20+
@@ -108,11 +109,12 @@ php artisan serve --port=8000
 cd frontend
 npm install
 cp .env.example .env
-# Set VITE_API_URL=http://localhost:8000
 npm run dev
 ```
 
-Open `http://localhost:5173` — the React app proxies API requests to Laravel.
+The `.env` file is pre-configured for local development with `VITE_API_URL=http://localhost:8000`. For production, update the env vars as needed (see **Frontend .env** section below).
+
+Open `http://localhost:5173` — the React app proxies API requests to the Laravel backend.
 
 ---
 
@@ -149,6 +151,7 @@ npm run build
 ```
 
 Add `public_html/.htaccess` for client-side routing:
+
 ```apache
 <IfModule mod_rewrite.c>
   RewriteEngine On
@@ -196,6 +199,20 @@ TERMII_SENDER_ID=KingdomFC
 FCM_SERVER_KEY=xxxx
 
 QUEUE_CONNECTION=database
+```
+
+### Frontend `.env` (key entries)
+
+```env
+VITE_API_URL=http://localhost:8000          # Backend API root (no /api suffix)
+VITE_PAYSTACK_PUBLIC_KEY=pk_live_xxxx       # From Paystack dashboard
+VITE_FIREBASE_API_KEY=xxxx
+VITE_FIREBASE_AUTH_DOMAIN=xxxx.firebaseapp.com
+VITE_FIREBASE_PROJECT_ID=xxxx
+VITE_FIREBASE_STORAGE_BUCKET=xxxx.appspot.com
+VITE_FIREBASE_MESSAGING_SENDER_ID=xxxx
+VITE_FIREBASE_APP_ID=1:xxxx:web:xxxx
+VITE_FCM_VAPID_KEY=xxxx                     # From Firebase Cloud Messaging settings
 ```
 
 ### Frontend `.env`
@@ -257,13 +274,13 @@ Monthly debit (scheduler):
 
 ## Third-Party Services (All Free or Pay-per-use — No Subscriptions)
 
-| Service | Purpose | Cost Model |
-|---|---|---|
-| Paystack | Virtual accounts + webhooks | % per transaction |
-| Brevo (ex-Sendinblue) | Transactional email | Free 300/day |
-| Termii | SMS (Nigeria) | Pay per SMS |
-| Firebase FCM | Push notifications | Free |
-| cPanel AutoSSL | HTTPS | Free (Let's Encrypt) |
+| Service               | Purpose                     | Cost Model           |
+| --------------------- | --------------------------- | -------------------- |
+| Paystack              | Virtual accounts + webhooks | % per transaction    |
+| Brevo (ex-Sendinblue) | Transactional email         | Free 300/day         |
+| Termii                | SMS (Nigeria)               | Pay per SMS          |
+| Firebase FCM          | Push notifications          | Free                 |
+| cPanel AutoSSL        | HTTPS                       | Free (Let's Encrypt) |
 
 ---
 
