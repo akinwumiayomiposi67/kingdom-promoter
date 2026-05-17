@@ -1,22 +1,24 @@
 import api from "./axios";
 
-export const getDashboardStats = () => api.get("/admin/dashboard/stats");
+export const getDashboardStats = () => api.get("/api/admin/dashboard/stats");
 
-export const getMembers = (params) => api.get("/admin/members", { params });
-export const getMember = (id) => api.get(`/admin/members/${id}`);
+export const getMembers = (params) => api.get("/api/admin/members", { params });
+export const getMember = (id) => api.get(`/api/admin/members/${id}`);
 export const updateMemberStatus = (id, data) =>
-  api.patch(`/admin/members/${id}/status`, data);
-export const inviteMember = (data) => api.post("/admin/members/invite", data);
+  api.patch(`/api/admin/members/${id}/status`, data);
+export const inviteMember = (data) =>
+  api.post("/api/admin/members/invite", data);
 
-export const getAdminWallets = () => api.get("/admin/wallets");
-export const getAdminWallet = (userId) => api.get(`/admin/wallets/${userId}`);
+export const getAdminWallets = () => api.get("/api/admin/wallets");
+export const getAdminWallet = (userId) =>
+  api.get(`/api/admin/wallets/${userId}`);
 export const manualDebit = (userId, data) =>
-  api.post(`/admin/wallets/${userId}/manual-debit`, data);
+  api.post(`/api/admin/wallets/${userId}/manual-debit`, data);
 
 export const getContributionsReport = (params) =>
-  api.get("/admin/reports/contributions", { params, responseType: "blob" });
+  api.get("/api/admin/reports/contributions", { params, responseType: "blob" });
 export const getWalletsReport = (params) =>
-  api.get("/admin/reports/wallets", { params, responseType: "blob" });
+  api.get("/api/admin/reports/wallets", { params, responseType: "blob" });
 
 export const getContributionCycleStats = (id) =>
   api.get(`/admin/cycles/${id}/stats`);

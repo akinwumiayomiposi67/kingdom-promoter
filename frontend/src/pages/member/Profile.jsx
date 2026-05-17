@@ -9,6 +9,7 @@ import {
   Eye,
   EyeOff,
   CheckCircle,
+  Loader2,
 } from "lucide-react";
 import { useAuthStore } from "../../store/authStore";
 import api from "../../api/axios";
@@ -28,7 +29,7 @@ export default function Profile() {
   const [pwdSuccess, setPwdSuccess] = useState(false);
 
   const changePwd = useMutation({
-    mutationFn: (data) => api.put("/member/profile/password", data),
+    mutationFn: (data) => api.put("/api/member/profile/password", data),
     onSuccess: () => {
       setPwdForm({
         current_password: "",
@@ -97,7 +98,7 @@ export default function Profile() {
               setPwdError("Passwords do not match.");
               return;
             }
-            pwdMutation.mutate(pwdForm);
+            changePwd.mutate(pwdForm);
           }}
           className="space-y-4 max-w-sm"
         >
@@ -153,10 +154,10 @@ export default function Profile() {
           </div>
           <button
             type="submit"
-            disabled={pwdMutation.isPending}
+            disabled={changePwd.isPending}
             className="btn-primary gap-2"
           >
-            {pwdMutation.isPending ? (
+            {changePwd.isPending ? (
               <>
                 <Loader2 size={15} className="animate-spin" /> Updating…
               </>

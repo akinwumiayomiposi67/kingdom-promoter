@@ -223,4 +223,3 @@ export default function Settings() {
     </div>
   );
 }
-description = "Account and security settings";
