@@ -16,6 +16,7 @@ use App\Http\Controllers\Member\ContributionController;
 use App\Http\Controllers\Member\DisbursementController as MemberDisbursementController;
 use App\Http\Controllers\Member\MeetingController as MemberMeetingController;
 use App\Http\Controllers\Member\NotificationController;
+use App\Http\Controllers\Member\ProfileController;
 use App\Http\Controllers\Member\WalletController;
 use App\Http\Controllers\PrivateFileController;
 use App\Http\Controllers\Webhook\PaystackWebhookController;
@@ -72,6 +73,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/notifications/unread-count', [NotificationController::class, 'unreadCount']);
         Route::post('/notifications/{id}/read', [NotificationController::class, 'markRead']);
         Route::post('/notifications/read-all', [NotificationController::class, 'markAllRead']);
+
+        // Profile
+        Route::put('/profile/password', [ProfileController::class, 'changePassword']);
     });
 
     // Admin-only routes
@@ -105,6 +109,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/cycles', [ContributionCycleController::class, 'store'])->middleware('two_factor');
         Route::get('/cycles/{id}', [ContributionCycleController::class, 'show']);
         Route::patch('/cycles/{id}/close', [ContributionCycleController::class, 'close'])->middleware('two_factor');
+        Route::post('/cycles/{id}/trigger-debit', [ContributionCycleController::class, 'triggerDebit'])->middleware('two_factor');
 
         // Disbursements
         Route::get('/disbursements', [AdminDisbursementController::class, 'index']);

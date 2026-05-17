@@ -1,33 +1,44 @@
-import { useQuery } from '@tanstack/react-query';
-import { Link } from 'react-router-dom';
-import { getWallet } from '../../api/wallet';
-import { getMyContributions, getGroupContributions } from '../../api/contributions';
-import { getDisbursements } from '../../api/disbursements';
-import { useAuthStore } from '../../store/authStore';
-import { formatCurrency } from '../../utils/formatCurrency';
-import Badge from '../../components/ui/Badge';
-import NotificationBell from '../../components/ui/NotificationBell';
+import { useQuery } from "@tanstack/react-query";
+import { Link } from "react-router-dom";
+import {
+  Wallet,
+  CreditCard,
+  ArrowUpRight,
+  PieChart,
+  CalendarDays,
+  ChevronRight,
+  TrendingUp,
+} from "lucide-react";
+import { getWallet } from "../../api/wallet";
+import {
+  getMyContributions,
+  getGroupContributions,
+} from "../../api/contributions";
+import { getDisbursements } from "../../api/disbursements";
+import { useAuthStore } from "../../store/authStore";
+import formatCurrency from "../../utils/formatCurrency";
+import Skeleton from "../../components/ui/Skeleton";
 
 export default function Dashboard() {
   const user = useAuthStore((state) => state.user);
 
   const { data: wallet, isLoading: walletLoading } = useQuery({
-    queryKey: ['wallet'],
+    queryKey: ["wallet"],
     queryFn: () => getWallet().then((r) => r.data.data.wallet),
   });
 
   const { data: myContributions } = useQuery({
-    queryKey: ['my-contributions', 1],
+    queryKey: ["my-contributions", 1],
     queryFn: () => getMyContributions(1).then((r) => r.data.data),
   });
 
   const { data: groupData } = useQuery({
-    queryKey: ['group-contributions', 1],
+    queryKey: ["group-contributions", 1],
     queryFn: () => getGroupContributions(1).then((r) => r.data.data),
   });
 
   const { data: disbursementsData } = useQuery({
-    queryKey: ['member-disbursements-dashboard'],
+    queryKey: ["member-disbursements-dashboard"],
     queryFn: () => getDisbursements().then((r) => r.data.data.disbursements),
   });
 
@@ -35,162 +46,122 @@ export default function Dashboard() {
   const latestContribution = myContributions?.data?.[0];
   const cycle = groupData?.cycle;
   const groupContributions = groupData?.contributions?.data ?? [];
-  const paidCount = groupContributions.filter((c) => c.status === 'paid').length;
+  const paidCount = groupContributions.filter(
+    (c) => c.status === "paid",
+  ).length;
   const totalMembers = groupData?.contributions?.total ?? 0;
+  const pendingCount = totalMembers - paidCount;
+  const hour = new Date().getHours();
+  const greeting =
+    hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-2xl font-bold mb-1" style={{ color: '#1a3c6e' }}>
-          Member Dashboard
+    <div className="page-content">
+      {/* Greeting hero */}
+      <div className="bg-sidebar rounded-2xl p-6 text-white">
+        <p className="text-blue-200 text-sm">{greeting},</p>
+        <h1 className="text-2xl font-bold mt-1">
+          {user?.name?.split(" ")[0] ?? "Member"} 👋
         </h1>
-        <div className="flex items-center justify-between mb-6">
-          <p className="text-gray-600">Welcome back, {user?.name}!</p>
-          <NotificationBell />
-        </div>
+      </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
-          {/* Wallet summary card */}
-          <div
-            className="rounded-xl p-6 text-white shadow-md"
-            style={{ backgroundColor: '#1a3c6e' }}
-          >
-            <p className="text-sm uppercase tracking-wide opacity-80">Wallet Balance</p>
-            {walletLoading ? (
-              <p className="text-2xl font-bold mt-1 opacity-60">Loading…</p>
-            ) : (
-              <>
-                <p className="text-3xl font-bold mt-1">
-                  {formatCurrency(wallet?.balance ?? 0)}
-                </p>
-                {wallet?.virtual_account_number && (
-                  <p className="text-sm opacity-70 mt-2">
-                    {wallet.virtual_account_bank} — {wallet.virtual_account_number}
-                  </p>
-                )}
-              </>
-            )}
-            <Link
-              to="/wallet"
-              className="inline-block mt-4 text-sm underline opacity-80 hover:opacity-100"
-            >
-              View wallet &rarr;
-            </Link>
-          </div>
-
-          {/* Contribution status card */}
-          <div className="rounded-xl p-6 bg-white shadow-md border border-gray-100">
-            <p className="text-sm uppercase tracking-wide text-gray-500">My Contribution</p>
-            {latestContribution ? (
-              <>
-                <p className="text-xl font-bold mt-1" style={{ color: '#1a3c6e' }}>
-                  {formatCurrency(latestContribution.amount)}
-                </p>
-                <p className="text-sm text-gray-500 mt-1">
-                  {latestContribution.cycle?.name} · {latestContribution.package?.name}
-                </p>
-                <div className="mt-2">
-                  <Badge status={latestContribution.status} />
-                </div>
-              </>
-            ) : (
-              <div className="mt-2">
-                <p className="text-gray-400 text-sm">No active contribution.</p>
-                <Link
-                  to="/onboarding"
-                  className="inline-block mt-2 text-sm font-semibold underline"
-                  style={{ color: '#f59e0b' }}
-                >
-                  Choose a package →
-                </Link>
-              </div>
-            )}
-            <Link
-              to="/contributions"
-              className="inline-block mt-4 text-sm underline opacity-70 hover:opacity-100"
-              style={{ color: '#1a3c6e' }}
-            >
-              View all contributions &rarr;
-            </Link>
-          </div>
-        </div>
-
-        {/* Last Disbursement card */}
-        {latestDisbursement && (
-          <div className="rounded-xl p-6 bg-white shadow-md border border-gray-100 mb-5">
-            <p className="text-sm uppercase tracking-wide text-gray-500">Last Disbursement</p>
-            <p className="text-xl font-bold mt-1" style={{ color: '#16a34a' }}>
-              {formatCurrency(latestDisbursement.amount)}
+      {/* Stats */}
+      <div className="grid grid-cols-2 gap-4">
+        <div className="card p-5">
+          <p className="text-xs text-slate-400 uppercase tracking-wide mb-1">
+            Wallet Balance
+          </p>
+          {walletLoading ? (
+            <div className="h-8 bg-slate-100 rounded animate-pulse" />
+          ) : (
+            <p className="text-2xl font-bold text-emerald-600">
+              {formatCurrency(wallet?.balance ?? 0)}
             </p>
-            <p className="text-sm text-gray-500 mt-1">
-              {latestDisbursement.title} · {latestDisbursement.cycle?.name}
-            </p>
-            {latestDisbursement.published_at && (
-              <p className="text-xs text-gray-400 mt-1">
-                {new Date(latestDisbursement.published_at).toLocaleDateString('en-NG', {
-                  day: '2-digit',
-                  month: 'short',
-                  year: 'numeric',
-                })}
-              </p>
-            )}
-            <Link
-              to="/disbursements"
-              className="inline-block mt-3 text-sm underline opacity-70 hover:opacity-100"
-              style={{ color: '#1a3c6e' }}
-            >
-              View all disbursements &rarr;
-            </Link>
-          </div>
-        )}
-
-        {/* Group stats card */}
-        {cycle && (
-          <div className="bg-white rounded-xl p-6 shadow-md border border-gray-100">
-            <div className="flex items-center justify-between mb-3">
-              <div>
-                <p className="text-sm uppercase tracking-wide text-gray-500">Group — {cycle.name}</p>
-                <Badge status={cycle.status} />
-              </div>
-              <Link
-                to="/contributions/group"
-                className="text-sm underline"
-                style={{ color: '#1a3c6e' }}
-              >
-                View all →
-              </Link>
-            </div>
-            <div className="grid grid-cols-2 gap-4 mt-3">
-              <div className="text-center">
-                <p className="text-2xl font-bold" style={{ color: '#16a34a' }}>{paidCount}</p>
-                <p className="text-xs text-gray-500">Members Paid</p>
-              </div>
-              <div className="text-center">
-                <p className="text-2xl font-bold" style={{ color: '#f59e0b' }}>{totalMembers - paidCount}</p>
-                <p className="text-xs text-gray-500">Pending</p>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Quick links */}
-        <div className="flex gap-3 flex-wrap mt-5">
-          <Link
-            to="/meetings"
-            className="inline-flex items-center gap-1 px-4 py-2 rounded-lg text-sm font-semibold border border-gray-200 bg-white hover:bg-gray-50 transition-colors"
-            style={{ color: '#1a3c6e' }}
-          >
-            📅 Meetings
-          </Link>
-          <Link
-            to="/notifications"
-            className="inline-flex items-center gap-1 px-4 py-2 rounded-lg text-sm font-semibold border border-gray-200 bg-white hover:bg-gray-50 transition-colors"
-            style={{ color: '#1a3c6e' }}
-          >
-            🔔 Notifications
-          </Link>
+          )}
+        </div>
+        <div className="card p-5">
+          <p className="text-xs text-slate-400 uppercase tracking-wide mb-1">
+            Active Cycle
+          </p>
+          <p className="text-lg font-bold text-slate-800">
+            {cycle?.name ?? "None"}
+          </p>
         </div>
       </div>
+
+      {/* Cycle progress */}
+      {cycle && (
+        <div className="card p-5">
+          <div className="flex items-center justify-between mb-2">
+            <p className="text-sm font-medium text-slate-700">
+              Cycle contributions
+            </p>
+            <p className="text-xs text-slate-400">
+              {paidCount} / {totalMembers} paid
+            </p>
+          </div>
+          <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+            <div
+              className="h-2 bg-emerald-500 rounded-full transition-all"
+              style={{
+                width:
+                  totalMembers > 0
+                    ? `${(paidCount / totalMembers) * 100}%`
+                    : "0%",
+              }}
+            />
+          </div>
+          <p className="text-xs text-amber-600 mt-2">
+            {pendingCount} member{pendingCount !== 1 ? "s" : ""} still pending
+          </p>
+        </div>
+      )}
+
+      {/* Quick links */}
+      <div className="grid grid-cols-2 gap-3">
+        {[
+          { to: "/wallet", label: "My Wallet", color: "text-emerald-600" },
+          {
+            to: "/contributions",
+            label: "Contributions",
+            color: "text-brand-600",
+          },
+          {
+            to: "/disbursements",
+            label: "Disbursements",
+            color: "text-violet-600",
+          },
+          { to: "/meetings", label: "Meetings", color: "text-amber-600" },
+        ].map(({ to, label, color }) => (
+          <Link
+            key={to}
+            to={to}
+            className="card p-4 text-center hover:shadow-card-md transition-shadow"
+          >
+            <p className={`text-sm font-semibold ${color}`}>{label}</p>
+          </Link>
+        ))}
+      </div>
+
+      {/* Latest contribution */}
+      {latestContribution && (
+        <div className="card p-5">
+          <div className="flex items-center justify-between">
+            <p className="text-sm font-medium text-slate-700">
+              Latest Contribution
+            </p>
+            <span className={`badge badge-${latestContribution.status}`}>
+              {latestContribution.status}
+            </span>
+          </div>
+          <p className="text-2xl font-bold text-brand-700 mt-1">
+            {formatCurrency(latestContribution.amount)}
+          </p>
+          <p className="text-xs text-slate-400">
+            {latestContribution.cycle?.name}
+          </p>
+        </div>
+      )}
     </div>
   );
 }

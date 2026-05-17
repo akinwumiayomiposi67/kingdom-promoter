@@ -1,15 +1,19 @@
-import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { Link } from 'react-router-dom';
-import { getMyContributions } from '../../api/contributions';
-import { formatCurrency } from '../../utils/formatCurrency';
-import Badge from '../../components/ui/Badge';
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { Link } from "react-router-dom";
+import { format } from "date-fns";
+import { ListChecks, Users } from "lucide-react";
+import { getMyContributions } from "../../api/contributions";
+import formatCurrency from "../../utils/formatCurrency";
+import PageHeader from "../../components/ui/PageHeader";
+import { SkeletonTable } from "../../components/ui/Skeleton";
+import EmptyState from "../../components/ui/EmptyState";
 
 export default function MyContributions() {
   const [page, setPage] = useState(1);
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: ['my-contributions', page],
+    queryKey: ["my-contributions", page],
     queryFn: () => getMyContributions(page).then((r) => r.data.data),
     keepPreviousData: true,
   });
@@ -17,98 +21,103 @@ export default function MyContributions() {
   const contributions = data?.data ?? [];
   const meta = data;
 
+  const statusClass = (s) =>
+    ({
+      paid: "badge-paid",
+      pending: "badge-pending",
+      failed: "badge-failed",
+    })[s] ?? "badge";
+
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-4xl mx-auto">
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-bold" style={{ color: '#1a3c6e' }}>
-            My Contributions
-          </h1>
-          <Link
-            to="/contributions/group"
-            className="text-sm underline"
-            style={{ color: '#1a3c6e' }}
-          >
-            View group contributions →
+    <div className="page-content">
+      <PageHeader
+        title="My Contributions"
+        description="Your monthly contribution history"
+        action={
+          <Link to="/group-contributions" className="btn-outline btn-sm gap-1">
+            <Users size={14} /> Group View
           </Link>
+        }
+      />
+
+      {isError && (
+        <p className="text-red-500 text-sm">Failed to load contributions.</p>
+      )}
+
+      {isLoading ? (
+        <SkeletonTable rows={5} cols={5} />
+      ) : contributions.length === 0 ? (
+        <div className="card">
+          <EmptyState
+            icon={ListChecks}
+            title="No contributions"
+            description="Your contributions will appear here once a cycle starts."
+          />
         </div>
-
-        {isLoading && <p className="text-gray-500">Loading…</p>}
-        {isError && <p className="text-red-500">Failed to load contributions.</p>}
-
-        {!isLoading && contributions.length === 0 && (
-          <div className="bg-white rounded-xl p-8 text-center shadow-sm">
-            <p className="text-gray-500">You have no contributions yet.</p>
-            <Link
-              to="/onboarding"
-              className="inline-block mt-4 text-sm font-semibold underline"
-              style={{ color: '#1a3c6e' }}
-            >
-              Choose a package to get started →
-            </Link>
-          </div>
-        )}
-
-        {contributions.length > 0 && (
-          <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-            <table className="w-full text-sm">
+      ) : (
+        <div className="card overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="table-auto w-full">
               <thead>
-                <tr className="text-left text-xs uppercase tracking-wide text-gray-500 border-b bg-gray-50">
-                  <th className="px-4 py-3">Cycle</th>
-                  <th className="px-4 py-3">Package</th>
-                  <th className="px-4 py-3">Amount</th>
-                  <th className="px-4 py-3">Status</th>
-                  <th className="px-4 py-3">Date</th>
+                <tr>
+                  <th>Cycle</th>
+                  <th>Package</th>
+                  <th className="text-right">Amount</th>
+                  <th>Date</th>
+                  <th>Status</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
+              <tbody>
                 {contributions.map((c) => (
-                  <tr key={c.id} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-4 py-3 font-medium text-gray-800">{c.cycle?.name ?? '—'}</td>
-                    <td className="px-4 py-3 text-gray-600">{c.package?.name ?? '—'}</td>
-                    <td className="px-4 py-3 font-semibold" style={{ color: '#1a3c6e' }}>
+                  <tr key={c.id}>
+                    <td className="font-medium text-slate-900">
+                      {c.cycle?.name ?? "—"}
+                    </td>
+                    <td className="text-slate-500 text-sm">
+                      {c.package?.name ?? "—"}
+                    </td>
+                    <td className="text-right font-semibold text-brand-700">
                       {formatCurrency(c.amount)}
                     </td>
-                    <td className="px-4 py-3">
-                      <Badge status={c.status} />
+                    <td className="text-slate-400 text-sm">
+                      {c.created_at
+                        ? format(new Date(c.created_at), "MMM d, yyyy")
+                        : "—"}
                     </td>
-                    <td className="px-4 py-3 text-gray-500">
-                      {c.paid_at
-                        ? new Date(c.paid_at).toLocaleDateString()
-                        : new Date(c.created_at).toLocaleDateString()}
+                    <td>
+                      <span className={`badge ${statusClass(c.status)}`}>
+                        {c.status}
+                      </span>
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
-
-            {/* Pagination */}
-            {meta && meta.last_page > 1 && (
-              <div className="flex items-center justify-between px-4 py-3 border-t text-sm text-gray-600">
-                <span>
-                  Page {meta.current_page} of {meta.last_page}
-                </span>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => setPage((p) => Math.max(1, p - 1))}
-                    disabled={meta.current_page === 1}
-                    className="px-3 py-1 rounded border disabled:opacity-40 hover:bg-gray-100"
-                  >
-                    Previous
-                  </button>
-                  <button
-                    onClick={() => setPage((p) => p + 1)}
-                    disabled={meta.current_page === meta.last_page}
-                    className="px-3 py-1 rounded border disabled:opacity-40 hover:bg-gray-100"
-                  >
-                    Next
-                  </button>
-                </div>
-              </div>
-            )}
           </div>
-        )}
-      </div>
+        </div>
+      )}
+
+      {meta?.last_page > 1 && (
+        <div className="flex items-center justify-center gap-3">
+          <button
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+            disabled={page <= 1}
+            className="btn-outline btn-sm"
+          >
+            Previous
+          </button>
+          <span className="text-sm text-slate-500">
+            Page {page} of {meta?.last_page}
+          </span>
+          <button
+            onClick={() => setPage((p) => Math.min(meta.last_page, p + 1))}
+            disabled={page >= meta.last_page}
+            className="btn-outline btn-sm"
+          >
+            Next
+          </button>
+        </div>
+      )}
     </div>
   );
 }

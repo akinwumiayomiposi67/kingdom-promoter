@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\CreateCycleRequest;
+use App\Jobs\DebitMonthlyCycleContributions;
 use App\Models\ContributionCycle;
 use Illuminate\Http\JsonResponse;
 
@@ -50,6 +51,25 @@ class ContributionCycleController extends Controller
         return response()->json([
             'success' => true,
             'data'    => ['cycle' => $cycle],
+        ]);
+    }
+
+    public function triggerDebit(int $id): JsonResponse
+    {
+        $cycle = ContributionCycle::findOrFail($id);
+
+        if ($cycle->status !== 'active') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Debit can only be triggered for active cycles.',
+            ], 422);
+        }
+
+        dispatch(new DebitMonthlyCycleContributions($cycle->id));
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Debit job dispatched. Members with sufficient balance will be debited shortly.',
         ]);
     }
 }

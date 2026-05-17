@@ -1,17 +1,11 @@
-import { Navigate } from 'react-router-dom';
-import { useAuthStore } from '../../store/authStore';
-import ProtectedRoute from './ProtectedRoute';
+import { Navigate, Outlet } from "react-router-dom";
+import { useAuthStore } from "../../store/authStore";
 
-export default function MemberRoute({ children }) {
-  const role = useAuthStore((state) => state.role);
+export default function MemberRoute() {
+  const { token, role } = useAuthStore();
 
-  return (
-    <ProtectedRoute>
-      {role === 'admin' ? (
-        <Navigate to="/admin/dashboard" replace />
-      ) : (
-        children
-      )}
-    </ProtectedRoute>
-  );
+  if (!token) return <Navigate to="/login" replace />;
+  if (role === "admin") return <Navigate to="/admin/dashboard" replace />;
+
+  return <Outlet />;
 }
