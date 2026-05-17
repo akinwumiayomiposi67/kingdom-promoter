@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('wallets', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete()->index();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->string('paystack_customer_code')->nullable();
             $table->string('virtual_account_number')->nullable();
             $table->string('virtual_account_bank')->nullable();

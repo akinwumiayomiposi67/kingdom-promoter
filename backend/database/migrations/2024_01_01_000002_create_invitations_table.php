@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('phone')->nullable();
             $table->foreignId('invited_by')->constrained('users')->cascadeOnDelete();
             $table->timestamp('used_at')->nullable();
-            $table->timestamp('expires_at');
+            $table->timestamp('expires_at')->useCurrent();
             $table->timestamps();
 
             $table->index('email');
